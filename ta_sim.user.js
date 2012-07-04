@@ -3,13 +3,14 @@
 // @description    Allows you to simulate combat before actually attacking.
 // @namespace      https://prodgame*.alliances.commandandconquer.com/*/index.aspx* 
 // @include        https://prodgame*.alliances.commandandconquer.com/*/index.aspx*
-// @version        1.3.2.2
-// @author         WildKatana | Updated by CodeEcho and PythEch
+// @version        1.3.2.3
+// @author         WildKatana | Updated by CodeEcho,PythEch,AvengersArmy
+// @require        http://sizzlemctwizzle.com/updater.php?id=137418
 // ==/UserScript==
 (function() {
     var TASuite_mainFunction = function() {
-            // Unpatched servers
-            function oldCreateTweak() {
+            // Newly Patched servers
+            function newCreateTweak() {
                 var TASuite = {};
                 qx.Class.define("TASuite.main", {
                     type: "singleton",
@@ -73,11 +74,11 @@
                         enemySupportStrengthLabel: null,
 
                         initialize: function() {
-                            this.add_ViewModeChange = (new ClientLib.Vis.ViewModeChange).HGL(this, this.onViewChange);
-                            this.add_ArmyChanged = (new $I.QQL).HGL(this, this.onUnitMoved);
+                            this.add_ViewModeChange = (new ClientLib.Vis.ViewModeChange).TNQEHB(this, this.onViewChange); //
+                            this.add_ArmyChanged = (new $I.GRHRBP).TNQEHB(this, this.onUnitMoved); //
                             this.buttonSimulateCombat = new qx.ui.form.Button("Simulate");
                             this.buttonSimulateCombat.set({
-                                width: 80,
+                                width: 70,
                                 appearance: "button-text-small",
                                 toolTipText: "Start Combat Simulation"
                             });
@@ -85,7 +86,7 @@
 
                             this.buttonReturnSetup = new qx.ui.form.Button("Setup");
                             this.buttonReturnSetup.set({
-                                width: 80,
+                                width: 70,
                                 appearance: "button-text-small",
                                 toolTipText: "Return to Combat Setup"
                             });
@@ -94,7 +95,7 @@
                             var replayBar = qx.core.Init.getApplication().getReportReplayOverlay();
                             replayBar.add(this.buttonReturnSetup, {
                                 top: 10,
-                                right: 80
+                                left: 0
                             });
 
                             var armyBar = qx.core.Init.getApplication().getUIItem(ClientLib.Data.Missions.PATH.BAR_ATTACKSETUP);
@@ -109,13 +110,13 @@
                             this.buttonUnlockAttack.addListener("click", this.unlockAttacks, this);
                             this.buttonUnlockAttack.setOpacity(0.5);
                             armyBar.add(this.buttonUnlockAttack, {
-                                top: 81,
+                                top: 103,
                                 right: 0
                             });
 
                             this.buttonTools = new qx.ui.form.Button("Tools");
                             this.buttonTools.set({
-                                width: 80,
+                                width: 70,
                                 appearance: "button-text-small",
                                 toolTipText: "Open Simulator Tools"
                             });
@@ -139,7 +140,7 @@
 
                                     var player_research = ClientLib.Data.MainData.GetInstance().get_Player().get_PlayerResearch();
 
-                                    for (var i in g.YEJ.units) {
+                                    for (var i in g.NUMTUV.units) { //
                                         var ug = g.GetUnit_Obj(i);
                                         var research = player_research.GetResearchItemFomMdbId(ug.tl);
 
@@ -170,11 +171,11 @@
 
                                     armyBar.add(_this.buttonTools, {
                                         top: 17,
-                                        right: 0
+                                        right: 70
                                     });
                                     armyBar.add(_this.buttonSimulateCombat, {
                                         top: 130,
-                                        right: 0
+                                        right: 70
                                     });
                                 } catch (e) {
                                     console.log(e);
@@ -459,7 +460,7 @@
                             var units = null;
                             for (var key in armyBar) {
                                 try {
-                                    if (armyBar[key] instanceof ClientLib.Data.CityPreArmyUnits) { // ClientLib.Data.CityPreArmyUnits renamed to $I.UIG
+                                    if (armyBar[key] instanceof ClientLib.Data.CityPreArmyUnits) { // ClientLib.Data.CityPreArmyUnits renamed to $I.UIG  = $I.NSVPME *CHECKED*
                                         units = armyBar[key];
                                         break;
                                     }
@@ -482,30 +483,31 @@
                                 7: 0
                             };
 
-                            if (city.get_CityBuildingsData().ZEI != null) {
+                            if (city.get_CityBuildingsData().LYXSZY != null) { //
                                 // every building
-                                num = city.get_CityBuildingsData().ZEI.l.length;
+                                num = city.get_CityBuildingsData().LYXSZY.l.length; //
                                 for (var j = num; --j >= 0;) {
-                                    var building = city.get_CityBuildingsData().ZEI.l[j];
+                                    var building = city.get_CityBuildingsData().LYXSZY.l[j]; //
                                     //TODO: check for destroyed building
                                     var mod = building.get_HitpointsPercent();
-                                    for (var i = building.KWG.rer.length; --i >= 0;) {
-                                        spoils[building.KWG.rer[i].t] += mod * building.KWG.rer[i].c;
+                                    for (var i = building.KBUDOV.rer.length; --i >= 0;) { //
+                                        spoils[building.KBUDOV.rer[i].t] += mod * building.KBUDOV.rer[i].c; //
                                     }
                                 }
                             }
 
                             // every unit
-                            if (city.get_CityUnitsData().QIG != null) {
-                                num = city.get_CityUnitsData().QIG.l.length;
+                            if (city.get_CityUnitsData().KWTOCI != null) { //
+                                num = city.get_CityUnitsData().KWTOCI.l.length; //
                                 for (j = num; --j >= 0;) {
-                                    var unit = city.get_CityUnitsData().QIG.l[j];
+                                    var unit = city.get_CityUnitsData().KWTOCI.l[j]; //
                                     mod = unit.get_HitpointsPercent();
-                                    for (i = unit.KWG.rer.length; --i >= 0;) {
-                                        spoils[unit.KWG.rer[i].t] += mod * unit.KWG.rer[i].c;
+                                    for (i = unit.KBUDOV.rer.length; --i >= 0;) {// 
+                                        spoils[unit.KBUDOV.rer[i].t] += mod * unit.KBUDOV.rer[i].c; //
                                     }
                                 }
                             }
+
                             this.tiberiumSpoils.setLabel(this.formatNumberWithCommas(spoils[1]));
                             this.crystalSpoils.setLabel(this.formatNumberWithCommas(spoils[2]));
                             this.creditSpoils.setLabel(this.formatNumberWithCommas(spoils[3]));
@@ -515,7 +517,7 @@
                             var battleground = this.setupBattleground(this.getCityPreArmyUnits());
 
                             // Run the simulation until it's done
-                            while (battleground.MAG.DPL(false)) {} // DoStep$0 was renamed to DPL, m_Simulation was renamed to MAG
+                            while (battleground.EGIABS.HGWHBL(false)) {} // DoStep$0 was renamed to HGWHBL, m_Simulation was renamed to EGIABS
 
                             this.calculateTroopStrengths(battleground);
                         },
@@ -528,9 +530,9 @@
                         },
                         onDamageDone: function(sender, e) {
                             var ta = window.TASuite.main.getInstance();
-                            battleground = sender.AQL.i[0].o; // DamageDone was renamed to AQL
+                            battleground = sender.YFDIDX.i[0].o; // DamageDone was renamed to YFDIDX
                             // For the sake of performance, only run this every 10th step
-                            if (battleground.BZF % 10 == 0) { // m_CurrentStep changed to BZF
+                            if (battleground.BVWRHH % 10 == 0) { // m_CurrentStep changed to BVWRHH
                                 ta.calculateTroopStrengths(battleground);
                                 ta.updateStatsWindow();
                             }
@@ -562,22 +564,22 @@
                             var own_city = ClientLib.Data.MainData.GetInstance().get_Cities().get_CurrentOwnCity();
                             var crd = own_city.get_CityRepairData();
                             var cud = own_city.get_CityUnitsData();
-                            var repair_times = own_city.get_CityUnitsData().ZHG.d; // m_FullRawRepairTimeForUnitGroupTypes renamed to ZHG
+                            var repair_times = own_city.get_CityUnitsData().RAECNA.d; // m_FullRawRepairTimeForUnitGroupTypes renamed to RAECNA
                             var r_types = ClientLib.Base.EResourceType;
 
-                            var entities = battleground.OAG.d; // m_Entities has been renamed to OAG
+                            var entities = battleground.UNMZDH.d; // m_Entities has been renamed to UNMZDH
 
                             for (var i in entities) {
                                 var entity = entities[i];
-                                var i_entity = entity.UBK; // get_Entity$0() has been removed. Propery is $I.TQL - UBK
-                                var a_entity = entity.TAK; // get_Entity$0() has been removed. Propery is $I.TQL - UBK
-                                var current_hp = i_entity.HUL; // m_iHitpointsCurrent has been renamed to HUL
-                                var max_hp = i_entity.GUL; // m_iHitpoints has been renamed to GUL
-                                if (a_entity.SIJ == 2) { // m_eAlignment has been renamed to SIJ, Attacker is 2
+                                var i_entity = entity.DPSDGN; // get_Entity$0() has been removed. Propery is $I.TQL - DPSDGN
+                                var a_entity = entity.LLEHXS; // ??? has been renamed to LLEHXS
+                                var current_hp = i_entity.IMCIAS; // m_iHitpointsCurrent has been renamed to IMCIAS
+                                var max_hp = i_entity.RWVGCU; // m_iHitpoints has been renamed to RWVGCU
+                                if (a_entity.LPECEI == 2) { // ??? has been renamed to LPECEI, Attacker is 2
                                     // This is one of the good guys
                                     end_hp += current_hp;
                                     total_hp += max_hp;
-                                    switch (a_entity.XIJ) { // XIJ is the movement type
+                                    switch (a_entity.ALSOZQ) { // movement type has been renamed to ALSOZQ
                                     case ClientLib.Base.EUnitMovementType.Air:
                                     case ClientLib.Base.EUnitMovementType.Air2:
                                         a_end_hp += current_hp;
@@ -600,17 +602,17 @@
                                     e_total_hp += max_hp;
                                     e_end_hp += current_hp;
 
-                                    switch (a_entity.XIJ) {
+                                    switch (a_entity.ALSOZQ) {
                                     case ClientLib.Base.EUnitMovementType.Structure:
                                         // Enemy Building
                                         eb_total_hp += max_hp;
                                         eb_end_hp += current_hp;
 
-                                        if (i_entity.VTL >= 200 && i_entity.VTL <= 205) {
+                                        if (i_entity.CPEVLZ >= 200 && i_entity.CPEVLZ <= 205) {
                                             this.SupportLevel = parseInt(i_entity.m_iLevel);
                                             this.lastSupportPercentage = (current_hp / max_hp) * 100;
                                         } else {
-                                            switch (i_entity.VTL) { // m_MDCTypeId has been renamed to VTL
+                                            switch (i_entity.CPEVLZ) { // m_MDCTypeId has been renamed to CPEVLZ
                                             case 112:
                                                 // CONSTRUCTION YARD
                                             case 151:
@@ -646,7 +648,7 @@
                             this.lastPercentage = (end_hp / total_hp) * 100;
 
                             // Calculate the repair time
-                            crd.ConvertRepairCost = crd.XWI; // ConvertRepairCost has been renamed to XWI
+                            crd.ConvertRepairCost = crd.IUFIIH; // ConvertRepairCost has been renamed to IUFIIH
                             this.lastInfantryRepairTime = crd.ConvertRepairCost(r_types.RepairChargeInf, repair_times[ClientLib.Data.EUnitGroup.Infantry], (1 - this.lastInfantryPercentage / 100));
                             this.lastAircraftRepairTime = crd.ConvertRepairCost(r_types.RepairChargeAir, repair_times[ClientLib.Data.EUnitGroup.Aircraft], (1 - this.lastAirPercentage / 100));
                             this.lastVehicleRepairTime = crd.ConvertRepairCost(r_types.RepairChargeVeh, repair_times[ClientLib.Data.EUnitGroup.Vehicle], (1 - this.lastVehiclePercentage / 100));
@@ -698,7 +700,7 @@
                             var SLabel = (this.SupportLevel > 0) ? this.SupportLevel.toString() : '--';
                             this.enemySupportLevelLabel.setValue('Suport lvl ' + SLabel + ': ');
                             this.updateLabel100(this.enemySupportStrengthLabel, this.lastSupportPercentage, -1);
-                            // ATTACKER 
+                            // ATTACKER
                             this.setLabelColor(this.simRepairTimeLabel, this.lastRepairTime / 14400.0, -1); //max is 4h
                             this.simRepairTimeLabel.setValue(this.formatSecondsAsTime(this.lastRepairTime, "h:mm:ss"));
                             // OVERALL
@@ -778,7 +780,6 @@
                         },
                         setupBattleground: function(offense_units) {
                             try {
-                                $I.LZH.KAI().EAI().JM(-1);
                                 var mainData = ClientLib.Data.MainData.GetInstance();
                                 var player_cities = mainData.get_Cities();
                                 var current_city = player_cities.get_CurrentCity();
@@ -792,29 +793,31 @@
                                 var alliance = ClientLib.Data.MainData.GetInstance().get_Alliance();
                                 var combatData = (new ClientLib.Data.Combat).$ctor();
                                 //var combatData = (new $I.CM).QB();
-                                combatData.RN = 1; // Version
+                                combatData.APSORU = 1; // Version is APSORU
 
-                                var unitData = own_city.get_CityUnitsData().QGG().l;
+                                var unitData = own_city.get_CityUnitsData().ZYRAGX().l; // Attacker Units renamed to ZYRAGX
                                 if (offense_units) {
-                                    offense_units = offense_units.LJG.l;
+                                    offense_units = offense_units.QJMZSF.l;
                                 } else {
                                     offense_units = own_city.get_CityArmyFormationsManager().GetFormationByTargetBaseId(current_city.get_Id()).get_ArmyUnits().l;
                                 }
                                 var data = new Array();
 
                                 for (var i = 0; i < unitData.length; i++) {
-                                    var info = new Object();
-                                    info.h = unitData[i].get_Health();
-                                    info.i = unitData[i].get_MdbUnitId();
-                                    info.l = unitData[i].get_CurrentLevel();
-                                    info.x = offense_units[i].get_CoordX();
-                                    info.y = offense_units[i].get_CoordY();
-                                    data.push(info);
+                                    if (offense_units[i].get_Enabled()) {
+                                        var info = new Object();
+                                        info.h = unitData[i].get_Health();
+                                        info.i = unitData[i].get_MdbUnitId();
+                                        info.l = unitData[i].get_CurrentLevel();
+                                        info.x = offense_units[i].get_CoordX();
+                                        info.y = offense_units[i].get_CoordY();
+                                        data.push(info);
+                                    }
                                 }
 
-                                combatData.TN = data; // Attackers
+                                combatData.VKMDZE = data; // Attackers renamed to VKMDZE
 
-                                unitData = current_city.get_CityUnitsData().QIG.l;
+                                unitData = current_city.get_CityUnitsData().KWTOCI.l; // Defender Units renamed to KWTOCI
                                 data = new Array();
                                 for (i = 0; i < unitData.length; i++) {
                                     info = new Object();
@@ -825,7 +828,7 @@
                                     info.y = unitData[i].get_CoordY();
                                     data.push(info);
                                 }
-                                combatData.UN = data; // Defenders
+                                combatData.GVXCID = data; // Defenders renamed to GVXCID
 
                                 data = new Array();
                                 for (var i = 0; i < 9; i++) {
@@ -859,9 +862,9 @@
                                     }
                                 }
 
-                                combatData.VN = data; // Terrain
+                                combatData.YNVCEJ = data; // Terrain renamed to YNVCEJ
 
-                                unitData = current_city.get_CityBuildingsData().ZEI.l;
+                                unitData = current_city.get_CityBuildingsData().LYXSZY.l; // City Buildings renamed to LYXSZY
                                 data = new Array();
                                 for (i = 0; i < unitData.length; i++) {
                                     info = new Object();
@@ -873,10 +876,10 @@
                                     data.push(info);
                                 }
 
-                                combatData.WN = data; // Buildings
+                                combatData.QTHZNO = data; // Buildings renamed to QTHZNO
 
-                                combatData.XN = null; // Support Structures
-                                combatData.SN = 8696244; // Start Step - this is just a random number
+                                combatData.WALWVP = null; // Support Structures renamed to WALWVP
+                                combatData.RNIUYF = 8696244; // Start Step - this is just a random number - renamed to RNIUYF
                                 combatData.m_CombatSteps = 1;
                                 combatData.m_BoostInfantry = alliance.get_POIInfantryBonus();
                                 combatData.m_BoostVehicle = alliance.get_POIVehicleBonus();
@@ -903,23 +906,20 @@
                                 combatData.m_AttackerModules = this.attacker_modules;
                                 combatData.m_DefenderModules = this.defender_modules;
 
-                                if (((combatData.m_DefenderFaction == $I.WHK.FORFaction) || (combatData.m_DefenderFaction == $I.WHK.NPCBase)) || (combatData.m_DefenderFaction == $I.WHK.NPCCamp)) {
-                                    combatData.GM();
+                                if (((combatData.m_DefenderFaction == ClientLib.Base.EFactionType.FORFaction) || (combatData.m_DefenderFaction == ClientLib.Base.EFactionType.NPCBase)) || (combatData.m_DefenderFaction == ClientLib.Base.EFactionType.NPCCamp)) {
+                                    combatData.BRGVNG(); // This might not be needed
                                 }
 
                                 combatData.m_MaxDuration = 120;
                                 combatData.m_Complete = false;
-                                combatData.ZN = null; // Debug
+                                combatData.VEMUKD = null; // Debug renamed to VEMUKD
 
                                 var battleground = ClientLib.Vis.VisMain.GetInstance().get_Battleground();
                                 battleground.Reset();
-                                battleground.VBG = combatData;
+                                battleground.FGVVJW = combatData; // m_currentreplay
                                 battleground.InitBattle();
-                                battleground.DXF(combatData);
+                                battleground.OCGRCH(combatData); // Set combat data
                                 battleground.StartBattle();
-                                if (battleground.FAG < 0x1d4c0) {
-                                    //battleground.FAG += 0xbb8;
-                                }
 
                                 return battleground;
                             } catch (e) {
@@ -940,7 +940,7 @@
                                 var battleground = this.setupBattleground();
 
                                 // Add the event listeners
-                                battleground.MAG.TOL((new $I.QQL).HGL(this, this.onDamageDone)); // m_Simulation became MAG, The add_DamageDone$0 has been renamed to TOL, System.EventHandler.$ctor was renamed to $I.QQL.HGL
+                                battleground.EGIABS.DCSRNO((new $I.GRHRBP).TNQEHB(this, this.onDamageDone)); // m_Simulation became EGIABS, The add_DamageDone$0 has been renamed to DCSRNO, System.EventHandler.$ctor was renamed to $I.GRHRBP.TNQEHB
 
                                 // Set the scene again, just in case it didn't work the first time
                                 try {
@@ -1059,11 +1059,11 @@
                                 var saved_unit = saved_units[i];
                                 units_list[i].set_CoordX(saved_unit.x);
                                 units_list[i].set_CoordY(saved_unit.y);
-                                units_list[i].SFB = saved_unit.id; // m_UnitId renamed to SFB
+                                units_list[i].DGACWJ = saved_unit.id; // m_UnitId renamed to DGACWJ
                             }
 
-                            units.DJG(); // UpdateArmyLayout$0() has been renamed to DJG()
-                            units.BJG(); // RefreshData() has been renamed to BJG()
+                            units.AXPSSY(); // UpdateArmyLayout$0() has been renamed to AXPSSY()
+                            units.ZDELLG(); // RefreshData() has been renamed to ZDELLG()
                         },
                         saveFormation: function() {
                             this.saved_units = [];
@@ -1075,13 +1075,13 @@
                                 armyUnit.y = unit.get_CoordY();
                                 armyUnit.id = unit.get_Id();
                                 this.saved_units.push(armyUnit);
-                            }
+    						}
                         }
                     }
                 });
             }
-            // Patched servers
-            function newCreateTweak() {
+            // Previous Patched servers
+            function oldCreateTweak() {
                 var TASuite = {};
                 qx.Class.define("TASuite.main", {
                     type: "singleton",
@@ -2158,10 +2158,10 @@
                         a = qx.core.Init.getApplication(); // application
                         mb = qx.core.Init.getApplication().getMenuBar();
                         if (a && mb) {
-                            if (PerforceChangelist == 361439) {
-                                oldCreateTweak();
-                            } else if (PerforceChangelist == 362709) {
+                            if (PerforceChangelist > 362709) {
                                 newCreateTweak();
+                            } else  {
+                                oldCreateTweak();
                             }
                             window.TASuite.main.getInstance().initialize();
                         } else window.setTimeout(TASuite_checkIfLoaded, 1000);
