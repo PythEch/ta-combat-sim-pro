@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name           Tiberium Alliances Combat Simulator
-// @description    Allows you to simulate combat before actually attacking.
-// @namespace      https://prodgame*.alliances.commandandconquer.com/*/index.aspx* 
-// @include        https://prodgame*.alliances.commandandconquer.com/*/index.aspx*
-// @version        1.4b1
-// @author         WildKatana | Updated by CodeEcho, PythEch and Matthias Fuchs
+// @name Tiberium Alliances Combat Simulator
+// @description Allows you to simulate combat before actually attacking.
+// @namespace https://prodgame*.alliances.commandandconquer.com/*/index.aspx*
+// @include https://prodgame*.alliances.commandandconquer.com/*/index.aspx*
+// @version 1.4b1
+// @author WildKatana | Updated by CodeEcho, PythEch and Matthias Fuchs
 // ==/UserScript==
 (function() {
    var TASuite_mainFunction = function() {
@@ -74,8 +74,8 @@
                   totalSeconds: null,
 
                   initialize: function() {
-                     this.add_ViewModeChange = (new ClientLib.Vis.ViewModeChange).HGL(this, this.onViewChange);
-                     this.add_ArmyChanged = (new $I.QQL).HGL(this, this.onUnitMoved);
+                     this.add_ViewModeChange = (new ClientLib.Vis.ViewModeChange).HGL(this, this.onViewChange); // FIXME
+                     this.add_ArmyChanged = (new $I.QQL).HGL(this, this.onUnitMoved); // FIXME
                      this.buttonSimulateCombat = new qx.ui.form.Button("Simulate");
                      this.buttonSimulateCombat.set({
                         width: 80,
@@ -140,7 +140,7 @@
 
                            var player_research = ClientLib.Data.MainData.GetInstance().get_Player().get_PlayerResearch();
 
-                           for (var i in g.YEJ.units) {
+                           for (var i in g.get_Gamedata().units) {
                               var ug = g.GetUnit_Obj(i);
                               var research = player_research.GetResearchItemFomMdbId(ug.tl);
 
@@ -491,27 +491,27 @@
                         7: 0
                      };
 
-                     if (city.get_CityBuildingsData().ZEI !== null) {
+                     if (city.get_CityBuildingsData().get_Buildings() !== null) {
                         // every building
-                        num = city.get_CityBuildingsData().ZEI.l.length;
+                        num = city.get_CityBuildingsData().get_Buildings().l.length;
                         for (var j = num; --j >= 0;) {
-                           var building = city.get_CityBuildingsData().ZEI.l[j];
+                           var building = city.get_CityBuildingsData().get_Buildings().l[j];
                            //TODO: check for destroyed building
                            var mod = building.get_HitpointsPercent();
-                           for (var i = building.KWG.rer.length; --i >= 0;) {
-                              spoils[building.KWG.rer[i].t] += mod * building.KWG.rer[i].c;
+                           for (var i = building.get_UnitLevelRequirements().rer.length; --i >= 0;) {
+                              spoils[building.get_UnitLevelRequirements().rer[i].t] += mod * building.get_UnitLevelRequirements().rer[i].c;
                            }
                         }
                      }
 
                      // every unit
-                     if (city.get_CityUnitsData().QIG !== null) {
-                        num = city.get_CityUnitsData().QIG.l.length;
+                     if (city.get_CityUnitsData().get_DefenseUnits() !== null) {
+                        num = city.get_CityUnitsData().get_DefenseUnits().l.length;
                         for (j = num; --j >= 0;) {
-                           var unit = city.get_CityUnitsData().QIG.l[j];
+                           var unit = city.get_CityUnitsData().get_DefenseUnits().l[j];
                            mod = unit.get_HitpointsPercent();
-                           for (i = unit.KWG.rer.length; --i >= 0;) {
-                              spoils[unit.KWG.rer[i].t] += mod * unit.KWG.rer[i].c;
+                           for (i = unit.get_UnitLevelRequirements().rer.length; --i >= 0;) {
+                              spoils[unit.get_UnitLevelRequirements().rer[i].t] += mod * unit.get_UnitLevelRequirements().rer[i].c;
                            }
                         }
                      }
@@ -525,7 +525,7 @@
 
                      // Run the simulation until it's done
                      while (battleground.MAG.DPL(false)) {} // DoStep$0 was renamed to DPL, m_Simulation was renamed to MAG
-
+						// FIXME
                      this.calculateTroopStrengths(battleground);
                   },
                   onUnitMoved: function(sender, e) {
@@ -571,15 +571,16 @@
                      var own_city = ClientLib.Data.MainData.GetInstance().get_Cities().get_CurrentOwnCity();
                      var crd = own_city.get_CityRepairData();
                      var cud = own_city.get_CityUnitsData();
-                     var repair_times = own_city.get_CityUnitsData().ZHG.d; // m_FullRawRepairTimeForUnitGroupTypes renamed to ZHG
+                     var repair_times = own_city.get_CityUnitsData().get_FullRawRepairTimeForUnitGroupTypes().d; // m_FullRawRepairTimeForUnitGroupTypes renamed to ZHG
                      var r_types = ClientLib.Base.EResourceType;
 
                      var entities = battleground.OAG.d; // m_Entities has been renamed to OAG
+					 // FIXME
 
                      for (var i in entities) {
                         var entity = entities[i];
-                        var i_entity = entity.UBK; // get_Entity$0() has been removed. Propery is $I.TQL - UBK
-                        var a_entity = entity.TAK; // get_Entity$0() has been removed. Propery is $I.TQL - UBK
+                        var i_entity = entity.get_Entity(); // get_Entity$0() has been removed. Propery is $I.TQL - UBK
+                        var a_entity = entity.get_UnitType(); // get_Entity$0() has been removed. Propery is $I.TQL - UBK
                         var current_hp = i_entity.HUL; // m_iHitpointsCurrent has been renamed to HUL
                         var max_hp = i_entity.GUL; // m_iHitpoints has been renamed to GUL
                         if (a_entity.SIJ === 2) { // m_eAlignment has been renamed to SIJ, Attacker is 2
@@ -707,7 +708,7 @@
                      var SLabel = (this.SupportLevel > 0) ? this.SupportLevel.toString() : '--';
                      this.enemySupportLevelLabel.setValue('Suport lvl ' + SLabel + ': ');
                      this.updateLabel100(this.enemySupportStrengthLabel, this.lastSupportPercentage, -1);
-                     // ATTACKER 
+                     // ATTACKER
                      this.setLabelColor(this.simRepairTimeLabel, this.lastRepairTime / 14400.0, -1); //max is 4h
                      this.simRepairTimeLabel.setValue(this.formatSecondsAsTime(this.lastRepairTime, "h:mm:ss"));
                      // OVERALL
@@ -1095,16 +1096,20 @@
 
          function TASuite_checkIfLoaded() {
             try {
-               if (typeof qx !== 'undefined') {
-                  a = qx.core.Init.getApplication(); // application
-                  mb = qx.core.Init.getApplication().getMenuBar();
-                  if (a && mb) {
-                     CreateTweak();
-                     window.TASuite.main.getInstance().initialize();
-                  } else window.setTimeout(TASuite_checkIfLoaded, 1000);
-               } else {
-                  window.setTimeout(TASuite_checkIfLoaded, 1000);
-               }
+			   if (typeof(CCTAWrapper_IsInstalled) != 'undefined' && CCTAWrapper_IsInstalled) {
+				   if (typeof qx !== 'undefined') {
+					  a = qx.core.Init.getApplication(); // application
+					  mb = qx.core.Init.getApplication().getMenuBar();
+					  if (a && mb) {
+						 CreateTweak();
+						 window.TASuite.main.getInstance().initialize();
+					  } else window.setTimeout(TASuite_checkIfLoaded, 1000);
+				   } else {
+					  window.setTimeout(TASuite_checkIfLoaded, 1000);
+				   }
+			   } else {
+					alert("C&C TA Wrapper is not installed!\r\nPlease install it from the description page.");
+				}
             } catch (e) {
                if (typeof console !== 'undefined') console.log(e);
                else if (window.opera) opera.postError(e);
