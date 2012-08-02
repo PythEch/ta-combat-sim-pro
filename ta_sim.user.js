@@ -4,7 +4,7 @@
 // @namespace      https://prodgame*.alliances.commandandconquer.com/*/index.aspx*
 // @include        https://prodgame*.alliances.commandandconquer.com/*/index.aspx*
 // @version        1.3.3.5
-// @author         WildKatana | Updated by CodeEcho, PythEch, Matthias Fuchs, Enceladus, KRS_L, TheLuminary, Panavia2 and Da Xue
+// @author         WildKatana | Updated by CodeEcho, PythEch, Matthias Fuchs, Enceladus, KRS_L, TheLuminary, Panavia2, Da Xue and JDuarteDJ
 // @require        http://sizzlemctwizzle.com/updater.php?id=138212
 // ==/UserScript==
 (function () {
@@ -26,7 +26,11 @@
               unlock: null, // buttonUnlockAttack
               unlockReset: null, // buttonUnlockReset
               tools: null, // buttonTools
-              optimize: null // buttonOptimize
+              optimize: null, // buttonOptimize
+			  shiftFormationUp: null, 
+			  shiftFormationDown: null,
+			  shiftFormationLeft: null,
+			  shiftFormationRight: null
             },
             simulate: {
               back: null // buttonReturnSetup
@@ -380,6 +384,38 @@
             });
             this.buttons.simulate.back.addListener("click", this.returnSetup, this);
 
+			 this.buttons.ShiftFormationLeft = new qx.ui.form.Button("<");
+			 this.buttons.ShiftFormationLeft.set({
+				width: 30,
+				appearance: "button-text-small",
+				toolTipText: "Shift units Left"
+			 });
+			 this.buttons.ShiftFormationLeft.addListener("click", this.shiftFormationLeft, this);
+			 
+			 this.buttons.ShiftFormationRight = new qx.ui.form.Button(">");
+			 this.buttons.ShiftFormationRight.set({
+				width: 30,
+				appearance: "button-text-small",
+				toolTipText: "Shift units RIGHT"
+			 });
+			 this.buttons.ShiftFormationRight.addListener("click", this.shiftFormationRight, this);
+
+			 this.buttons.ShiftFormationUp = new qx.ui.form.Button("^");
+			 this.buttons.ShiftFormationUp.set({
+				width: 30,
+				appearance: "button-text-small",
+				toolTipText: "Shift units UP"
+			 });
+			 this.buttons.ShiftFormationUp.addListener("click", this.shiftFormationUp, this);
+			 
+			 this.buttons.ShiftFormationDown = new qx.ui.form.Button("v");
+			 this.buttons.ShiftFormationDown.set({
+				width: 30,
+				appearance: "button-text-small",
+				toolTipText: "Shift DOWN"
+			 });
+			 this.buttons.ShiftFormationDown.addListener("click", this.shiftFormationDown, this);
+			
             var replayBar = qx.core.Init.getApplication().getReportReplayOverlay();
             replayBar.add(this.buttons.simulate.back, {
               top: 10,
@@ -490,6 +526,23 @@
                   top: 112,
                   right: 62
                 });
+				armyBar.add(_this.buttons.ShiftFormationUp, {
+				  top: 21,
+				  right: 77
+			   });
+			   armyBar.add(_this.buttons.ShiftFormationLeft, {
+				  top: 40,
+				  right: 92
+			   });
+			   armyBar.add(_this.buttons.ShiftFormationRight, {
+				  top: 40,
+				  right: 62
+			   });
+			   armyBar.add(_this.buttons.ShiftFormationDown, {
+				  top: 55,
+				  right: 77
+			   });
+			   
               } catch (e) {
                 console.log(e);
               }
@@ -1224,7 +1277,57 @@
           },
           optimizeLayout: function () {
 
-          }
+          },
+		   shiftFormation: function(direction) { //left right up down
+				  
+			  if (!direction) var direction = window.prompt("indicate a direction to shift units: up(u), down(d), left(l) or right(r)");
+			  
+			  if (direction=="up" || direction=="u") var v_shift = -1;
+			  if (direction=="down" || direction=="d") var v_shift = 1;
+			  if (direction=="left" || direction=="l") var h_shift = -1;
+			  if (direction=="right" || direction=="r") var h_shift = 1;
+			  
+			  if (!v_shift) var v_shift=0;
+			  if (!h_shift) var h_shift=0;
+			  
+				var units = this.getCityPreArmyUnits();
+				this.units = units.get_ArmyUnits().l;
+				var Army = [];
+				//read army, consider use saveFormation(?)
+				for (var i = 0;
+				 (i < this.units.length); i++) {
+					var unit = this.units[i];
+					var armyUnit = {};
+					var x = unit.get_CoordX() + h_shift;
+					switch (x) {
+					case 9:
+						x = 0;
+						break;
+					case -1:
+						x = 8;
+						break;
+					}
+					var y = unit.get_CoordY() + v_shift;
+					switch (y) {
+					case 4:
+						y = 0;
+						break;
+					case -1:
+						y = 3;
+						break;
+					}
+					armyUnit.x = x;
+					armyUnit.y = y;
+					armyUnit.id = unit.get_Id();
+					armyUnit.enabled = unit.get_Enabled(); 
+					Army.push(armyUnit);
+				 }
+				this.restoreFormation(Army);
+			  },
+			  shiftFormationUp: function() {this.shiftFormation('u');},
+			  shiftFormationDown: function() {this.shiftFormation('d');},
+			  shiftFormationLeft: function() {this.shiftFormation('l');},
+			  shiftFormationRight: function() {this.shiftFormation('r');}
         }
       });
     }
