@@ -3,7 +3,7 @@
 // @description    Allows you to simulate combat before actually attacking.
 // @namespace      https://prodgame*.alliances.commandandconquer.com/*/index.aspx*
 // @include        https://prodgame*.alliances.commandandconquer.com/*/index.aspx*
-// @version        1.4.1.1
+// @version        1.4.1.2
 // @author         WildKatana | Updated by CodeEcho, PythEch, Matthias Fuchs, Enceladus, KRS_L, TheLuminary, Panavia2, Da Xue and JDuarteDJ
 // @require        http://sizzlemctwizzle.com/updater.php?id=138212
 // ==/UserScript==
@@ -133,18 +133,9 @@
             }
           },
 		  getCityPreArmyUnits: function () {
-            var armyBar = qx.core.Init.getApplication().getUIItem(
-            ClientLib.Data.Missions.PATH.BAR_ATTACKSETUP);
-            var units = null;
-            for (var key in armyBar) {
-              try {
-                if (armyBar[key] instanceof ClientLib.Data.CityPreArmyUnits) { // ClientLib.Data.CityPreArmyUnits renamed to $I.UIG = $I.NSVPME *CHECKED*
-                  units = armyBar[key];
-                  break;
-                }
-              } catch (e) {}
-            }
-
+		    var ownCity = ClientLib.Data.MainData.GetInstance().get_Cities().get_CurrentOwnCity();
+			var formationManager = ownCity.get_CityArmyFormationsManager();
+			var units = formationManager.GetFormationByTargetBaseId(formationManager.get_CurrentTargetBaseId());
             return units;
           },
 		  restoreFormation: function (saved_units) {
