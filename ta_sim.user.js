@@ -3,7 +3,7 @@
 // @description    Allows you to simulate combat before actually attacking.
 // @namespace      https://prodgame*.alliances.commandandconquer.com/*/index.aspx*
 // @include        https://prodgame*.alliances.commandandconquer.com/*/index.aspx*
-// @version        1.4.1.2
+// @version        1.4.1.3
 // @author         WildKatana | Updated by CodeEcho, PythEch, Matthias Fuchs, Enceladus, KRS_L, TheLuminary, Panavia2, Da Xue and JDuarteDJ
 // @require        http://sizzlemctwizzle.com/updater.php?id=138212
 // ==/UserScript==
@@ -803,18 +803,9 @@
             }
           },
           getCityPreArmyUnits: function () {
-            var armyBar = qx.core.Init.getApplication().getUIItem(
-            ClientLib.Data.Missions.PATH.BAR_ATTACKSETUP);
-            var units = null;
-            for (var key in armyBar) {
-              try {
-                if (armyBar[key] instanceof ClientLib.Data.CityPreArmyUnits) { // ClientLib.Data.CityPreArmyUnits renamed to $I.UIG = $I.NSVPME *CHECKED*
-                  units = armyBar[key];
-                  break;
-                }
-              } catch (e) {}
-            }
-
+		    var ownCity = ClientLib.Data.MainData.GetInstance().get_Cities().get_CurrentOwnCity();
+			var formationManager = ownCity.get_CityArmyFormationsManager();
+			var units = formationManager.GetFormationByTargetBaseId(formationManager.get_CurrentTargetBaseId());
             return units;
           },
           calculateLoot: function () {
@@ -904,8 +895,11 @@
             var own_city = ClientLib.Data.MainData.GetInstance().get_Cities().get_CurrentOwnCity();
             var crd = own_city.get_CityRepairData();
             var cud = own_city.get_CityUnitsData();
+			
+			//Found something similar in the API but the values I get are lower... using      cud.GetRepairTimeFromEUnitGroup(ClientLib.Data.EUnitGroup.Infantry) -- note that its a function not an array -- instead of repair[ClientLib.Data.EUnitGroup.Infantry], this example refers to infantery but applies to all members of ClientLib.Data.EUnitGroup
             var repair_times = own_city.get_CityUnitsData().EDTHDX.d; // m_FullRawRepairTimeForUnitGroupTypes renamed to EDTHDX
-            var r_types = ClientLib.Base.EResourceType;
+            
+			var r_types = ClientLib.Base.EResourceType;
 
             var entities = battleground.NNXRBC.d; // m_Entities has been renamed to NNXRBC
             for (var i in entities) {
